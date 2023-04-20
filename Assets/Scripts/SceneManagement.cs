@@ -1,28 +1,29 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class SceneManagement : MonoBehaviour
+namespace TowerDefenseGame.Scripts
 {
-    public static SceneManagement instance;
-    private void Awake()
+    public class SceneManagement : MonoBehaviour
     {
-        if (instance != null)
+        public static SceneManagement instance;
+        private void Awake()
         {
-            return;
+            if (instance != null)
+            {
+                return;
+            }
+            else
+            {
+                instance = this;
+            }
         }
-        else
+        public void ChangeToGameScene()
         {
-            instance = this;
+            SceneManager.LoadScene("Game");
         }
-    }
-    public void ChangeToGameScene()
-    {
-        SceneManager.LoadScene("Game");
-    }
-    public void ChangeToMainMenuScene()
-    {
-        SceneManager.LoadScene("MainMenu");
+        public void ChangeToMainMenuScene()
+        {
+            SceneManager.LoadScene("MainMenu");
+        }
     }
 }

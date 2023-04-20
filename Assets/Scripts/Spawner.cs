@@ -1,112 +1,115 @@
 using System.Collections;
-using System.Collections.Generic;
+using TowerDefenseGame.Scripts.Enums;
 using UnityEngine;
 
-public class Spawner : MonoBehaviour
+namespace TowerDefenseGame.Scripts
 {
-    // General Wave Attributes
-    public static Transform[] SpawnPoints;
-    public GameObject[] Enemies;
-    public Transform target;
-    public ProgressBar progressBar;
-    // Wave Customisation
-    private int WaveIndex = 0;
-    public int WaveLimit = 25;
-    public float timer = 2.5f;
-    public float timeOfWaves = 6.5f;
-    public int enemiesPerWave = 5;
-
-    // Wave internal Attributes
-    public Wavephase wavephase;
-
-    private void Awake()
+    public class Spawner : MonoBehaviour
     {
-        // Initialize the array of point
-        SpawnPoints = new Transform[transform.childCount];
+        // General Wave Attributes
+        public static Transform[] SpawnPoints;
+        public GameObject[] Enemies;
+        public Transform target;
+        public ProgressBar progressBar;
+        // Wave Customisation
+        private int WaveIndex = 0;
+        public int WaveLimit = 25;
+        public float timer = 2.5f;
+        public float timeOfWaves = 6.5f;
+        public int enemiesPerWave = 5;
 
-        // Set all the child points
-        for (int i = 0; i < SpawnPoints.Length; i++)
+        // Wave internal Attributes
+        public Wavephase wavephase;
+
+        private void Awake()
         {
-            SpawnPoints[i] = transform.GetChild(i);
-        }
-    }
+            // Initialize the array of point
+            SpawnPoints = new Transform[transform.childCount];
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        // Init Wavephase
-        wavephase = Wavephase.PHASE_1;
-
-        // Init WaveLimit
-        WaveLimit = 25;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        // Spawn multiple waves of enemies depending on the time of each wave generation.
-        if (WaveIndex != WaveLimit)
-        {
-            if (timer <= 0.0f)
+            // Set all the child points
+            for (int i = 0; i < SpawnPoints.Length; i++)
             {
-                // Generate the next wave
-                StartCoroutine(WavePhaseState());
-                // 
-                timer = timeOfWaves;
+                SpawnPoints[i] = transform.GetChild(i);
             }
         }
 
-        timer -= Time.deltaTime;
-       TODO: progressBar.current = timer;
-    }
-
-
-    IEnumerator WavePhaseState()
-    {
-        // Change the wave phase
-        switch (wavephase)
+        // Start is called before the first frame update
+        void Start()
         {
-            case Wavephase.PHASE_1:
-                WaveIndex++;
-                wavephase = Wavephase.PHASE_2;
-                break;
-            case Wavephase.PHASE_2:
-                enemiesPerWave += 2;
-                WaveIndex++;
-                wavephase = Wavephase.PHASE_3;
-                break;
-            case Wavephase.PHASE_3:
-                enemiesPerWave += 2;
-                WaveIndex++;
-                wavephase = Wavephase.PHASE_4;
-                break;
-            case Wavephase.PHASE_4:
-                enemiesPerWave += 2;
-                WaveIndex++;
-                wavephase = Wavephase.PHASE_5;
-                break;
-            case Wavephase.PHASE_5:
-                enemiesPerWave += 2;
-                WaveIndex++;
-                break;
-            default:
-                break;
+            // Init Wavephase
+            wavephase = Wavephase.PHASE_1;
+
+            // Init WaveLimit
+            WaveLimit = 25;
         }
 
-        // Spawn a new wave of enemies
-        for (int i = 0; i < enemiesPerWave; i++)
+        // Update is called once per frame
+        void Update()
         {
-            SpawnEnemy();
-            yield return new WaitForSeconds(1f);
+            // Spawn multiple waves of enemies depending on the time of each wave generation.
+            if (WaveIndex != WaveLimit)
+            {
+                if (timer <= 0.0f)
+                {
+                    // Generate the next wave
+                    StartCoroutine(WavePhaseState());
+                    // 
+                    timer = timeOfWaves;
+                }
+            }
+
+            timer -= Time.deltaTime;
+            //TODO: progressBar.current = timer;
         }
-    }
 
-    void SpawnEnemy()
-    {
-        int randomEnemy = Random.Range(0, Enemies.Length);
-        int randomPoints = Random.Range(0, SpawnPoints.Length);
-        Enemies[randomEnemy].GetComponent<Unit>().target = target;
-        var enemy = Instantiate(Enemies[randomEnemy], SpawnPoints[randomPoints].position, transform.rotation);
-    }
 
+        IEnumerator WavePhaseState()
+        {
+            // Change the wave phase
+            switch (wavephase)
+            {
+                case Wavephase.PHASE_1:
+                    WaveIndex++;
+                    wavephase = Wavephase.PHASE_2;
+                    break;
+                case Wavephase.PHASE_2:
+                    enemiesPerWave += 2;
+                    WaveIndex++;
+                    wavephase = Wavephase.PHASE_3;
+                    break;
+                case Wavephase.PHASE_3:
+                    enemiesPerWave += 2;
+                    WaveIndex++;
+                    wavephase = Wavephase.PHASE_4;
+                    break;
+                case Wavephase.PHASE_4:
+                    enemiesPerWave += 2;
+                    WaveIndex++;
+                    wavephase = Wavephase.PHASE_5;
+                    break;
+                case Wavephase.PHASE_5:
+                    enemiesPerWave += 2;
+                    WaveIndex++;
+                    break;
+                default:
+                    break;
+            }
+
+            // Spawn a new wave of enemies
+            for (int i = 0; i < enemiesPerWave; i++)
+            {
+                SpawnEnemy();
+                yield return new WaitForSeconds(1f);
+            }
+        }
+
+        void SpawnEnemy()
+        {
+            int randomEnemy = Random.Range(0, Enemies.Length);
+            int randomPoints = Random.Range(0, SpawnPoints.Length);
+            Enemies[randomEnemy].GetComponent<Unit>().target = target;
+            var enemy = Instantiate(Enemies[randomEnemy], SpawnPoints[randomPoints].position, transform.rotation);
+        }
+
+    }
 }
